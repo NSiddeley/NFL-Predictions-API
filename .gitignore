@@ -1,0 +1,42 @@
+# Exclude everything by default
+*
+
+# Include Python source files
+!*.py
+
+# Include configuration files
+!pyproject.toml
+!pytest.ini
+!.env.example
+
+# Include directories (need to whitelist them explicitly)
+!routes/
+!routes/**
+!models/
+!models/**
+!services/
+!services/**
+!tests/
+!tests/**
+
+# Include documentation
+!README.md
+!LICENSE
+!.gitignore
+
+# Exclude specific patterns even if they match above
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.so
+*.egg
+*.egg-info/
+.env
+poetry.lock
+.pytest_cache/
+.coverage
+*.log
+.vscode/
+.idea/
