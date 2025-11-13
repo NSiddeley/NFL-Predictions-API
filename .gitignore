@@ -19,6 +19,11 @@
 !tests/
 !tests/**
 
+# Include deployment files
+!requirements.txt
+!Procfile
+!runtime.txt
+
 # Include documentation
 !README.md
 !LICENSE
