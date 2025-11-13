@@ -467,7 +467,7 @@ GET /predictions/?season=2024&week=10
 Show historical prediction performance for a specific team.
 
 ```javascript
-GET /predictions/?team=Kansas%20City%20Chiefs
+GET /predictions/?team=BAL
 ```
 
 ### 3. Model Performance Tracking
@@ -535,51 +535,12 @@ All error responses follow this format:
 }
 ```
 
-## Rate Limiting
-
-Currently, there are no rate limits enforced. For production use, implement rate limiting on your client side to avoid overwhelming the API.
-
-## CORS
-
-If you encounter CORS issues when integrating with your web app, ensure your API is configured to allow requests from your domain.
-
-## Best Practices
-
-1. **Error Handling**: Always implement try-catch blocks when making API requests
-2. **Loading States**: Show loading indicators during API calls
-3. **Caching**: Cache frequently accessed data (e.g., weekly predictions)
-4. **Pagination**: For large datasets, implement client-side pagination
-5. **Optimistic Updates**: Update UI optimistically, then sync with API response
-6. **Retry Logic**: Implement retry logic for failed requests
-7. **Validation**: Validate user input on the client side before sending to API
-
 ## Data Integrity
 
 - **Idempotency**: PUT and DELETE operations are idempotent
 - **Atomic Operations**: All database operations are atomic
 - **Validation**: All inputs are validated server-side regardless of client validation
 - **Type Safety**: Pydantic models ensure type consistency
-
-## Future Enhancements
-
-Planned features for future releases:
-
-- Batch operations (create/update multiple predictions)
-- Aggregation endpoints (model accuracy statistics, weekly performance)
-- WebSocket support for real-time updates
-- Authentication and authorization
-- API versioning
-- Rate limiting
-- Pagination for large result sets
-- Advanced filtering (date ranges, confidence thresholds)
-
-## Support
-
-For issues, questions, or feature requests:
-
-- **GitHub Issues**: [Create an issue](https://github.com/YOUR_USERNAME/NFL-Predictions-API/issues)
-- **Email**: your.email@example.com
-- **Documentation**: Access live docs at `{BASE_URL}/docs`
 
 ## License
 
