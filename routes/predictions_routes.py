@@ -4,6 +4,7 @@ from models.predictions import Prediction, CreatePredictionRequest
 from services.predictions_services import (
     get_all_predictions,
     get_prediction_by_id,
+    get_predictions_by_params,
     get_predictions_by_season_week,
     get_predictions_by_team,
     create_prediction,
@@ -54,10 +55,10 @@ def get_predictions(
     - **team**: Filter by team name
     """
     try:
-        if season and week:
-            predictions = get_predictions_by_season_week(season, week)
-        elif team:
-            predictions = get_predictions_by_team(team)
+        if season or week or team:
+            predictions = get_predictions_by_params(season=season,
+                                                    week=week,
+                                                    team=team)
         else:
             predictions = get_all_predictions()
 

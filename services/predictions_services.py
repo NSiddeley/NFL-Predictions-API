@@ -40,6 +40,25 @@ def get_prediction_by_id(prediction_id: str) -> dict:
     
     return individual_serial(prediction)
 
+def get_predictions_by_params(season: Optional[int] = None, week: Optional[int] = None, team: Optional[str] = None) -> list[dict]:
+    query = {}
+
+    if season:
+        query["season"] = season
+    if week:
+        query["week"] = week
+    if team:
+        query["$or"] = [{"home_team": team}, {"away_team": team}]
+
+    filterered_predictions = predictions.find(query)
+    count = predictions.count_documents(query)
+
+    if filterered_predictions is None or count == 0:
+        raise ValueError(f"No predictions found with the given parameters")
+    
+    return list_serial(filterered_predictions)
+        
+
 def get_predictions_by_season_week(season: int, week: int) -> list[dict]:
     """Retrieve predictions filtered by season and week"""
     query = {"season": season, "week": week}
