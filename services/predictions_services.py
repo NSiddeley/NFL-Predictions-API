@@ -41,6 +41,7 @@ def get_prediction_by_id(prediction_id: str) -> dict:
     return individual_serial(prediction)
 
 def get_predictions_by_params(season: Optional[int] = None, week: Optional[int] = None, team: Optional[str] = None) -> list[dict]:
+    """Retrieve predictions based on the given parameters"""
     query = {}
 
     if season:
