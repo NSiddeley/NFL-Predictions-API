@@ -1,5 +1,6 @@
 from fastapi import FastAPI
-from routes.nfl_predictions_routes import router as nfl_predictions_router
+from routes.nfl_predictions_routes import nfl_predictions_router
+from routes.ml_models_routes import models_router
 from database import client
 from contextlib import asynccontextmanager
 
@@ -26,7 +27,8 @@ app = FastAPI(
 )
 
 # Include routers
-app.include_router(nfl_predictions_router, prefix="/nflpredictions", tags=["nfl predictions"])
+app.include_router(nfl_predictions_router, prefix="/nflpredictions", tags=["NFL predictions"])
+app.include_router(models_router, prefix="/models", tags=["ML model packages"])
 
 @app.get("/")
 async def root():

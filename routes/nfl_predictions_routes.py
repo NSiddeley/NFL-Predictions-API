@@ -14,10 +14,10 @@ from services.nfl_predictions_services import (
 )
 from typing import Optional, List
 
-router = APIRouter()
+nfl_predictions_router = APIRouter()
 
 # CREATE - Add a new prediction
-@router.post("/", status_code=status.HTTP_201_CREATED, response_model=Prediction, response_class=JSONResponse)
+@nfl_predictions_router.post("/", status_code=status.HTTP_201_CREATED, response_model=Prediction, response_class=JSONResponse)
 def add_prediction(request: Request, payload: CreatePredictionRequest):
     """
     Create a new NFL game prediction
@@ -40,7 +40,7 @@ def add_prediction(request: Request, payload: CreatePredictionRequest):
         return JSONResponse(content={"message": str(e)}, status_code=500)
 
 # READ - Get all predictions with optional filters
-@router.get("/", status_code=status.HTTP_200_OK, response_model=List[Prediction], response_class=JSONResponse)
+@nfl_predictions_router.get("/", status_code=status.HTTP_200_OK, response_model=List[Prediction], response_class=JSONResponse)
 def get_predictions(
     request: Request,
     season: Optional[int] = Query(None, description="Filter by season"),
@@ -69,7 +69,7 @@ def get_predictions(
         return JSONResponse(content={"message": str(e)}, status_code=500)
 
 # READ - Get a single prediction by ID
-@router.get("/{prediction_id}", status_code=status.HTTP_200_OK, response_model=Prediction, response_class=JSONResponse)
+@nfl_predictions_router.get("/{prediction_id}", status_code=status.HTTP_200_OK, response_model=Prediction, response_class=JSONResponse)
 def get_prediction(request: Request, prediction_id: str):
     """
     Retrieve a specific prediction by its ID
@@ -87,7 +87,7 @@ def get_prediction(request: Request, prediction_id: str):
 
 
 # UPDATE - Update an existing prediction
-@router.put("/{prediction_id}", status_code=status.HTTP_200_OK, response_model=dict, response_class=JSONResponse)
+@nfl_predictions_router.put("/{prediction_id}", status_code=status.HTTP_200_OK, response_model=Prediction, response_class=JSONResponse)
 def update_prediction_route(request: Request, prediction_id: str, prediction: CreatePredictionRequest):
     """
     Update an existing prediction
@@ -104,7 +104,7 @@ def update_prediction_route(request: Request, prediction_id: str, prediction: Cr
     except Exception as e:
         return JSONResponse(content={"message": str(e)}, status_code=500)
     
-@router.delete("/deleteall", status_code=status.HTTP_200_OK, response_class=JSONResponse)
+@nfl_predictions_router.delete("/deleteall", status_code=status.HTTP_200_OK, response_class=JSONResponse)
 def delete_all_route(request: Request):
     """
     Delete all documents in the predictions collection
@@ -120,7 +120,7 @@ def delete_all_route(request: Request):
         return JSONResponse(content={"message": str(e)}, status_code=500)
 
 # DELETE - Delete a prediction
-@router.delete("/{prediction_id}", status_code=status.HTTP_200_OK, response_model=dict, response_class=JSONResponse)
+@nfl_predictions_router.delete("/{prediction_id}", status_code=status.HTTP_200_OK, response_model=dict, response_class=JSONResponse)
 def delete_prediction_route(request: Request, prediction_id: str):
     """
     Delete a prediction by its ID

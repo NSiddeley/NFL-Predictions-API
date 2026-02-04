@@ -279,6 +279,263 @@ DELETE /predictions/{prediction_id}
 
 ---
 
+### ML Models Endpoints
+
+#### Get All Model Packages
+
+Retrieve all ML model packages with optional filtering.
+
+```http
+GET /ml_models/
+```
+
+**Query Parameters:**
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `date_trained` | string | No | Filter by date model was trained (MM-DD-YYYY) |
+| `label` | string | No | Filter by model package label |
+
+**Example Requests:**
+
+```http
+# Get all model packages
+GET /ml_models/
+
+# Get models trained on a specific date
+GET /ml_models/?date_trained=01-15-2024
+
+# Get models by package label
+GET /ml_models/?label=RandomForest-v1
+```
+
+**Response (200 OK):**
+```json
+[
+  {
+    "package_id": "507f1f77bcf86cd799439011",
+    "package_label": "RandomForest-v1",
+    "model": "gASVowAAAAAAAACMEn...",
+    "model_features": ["home_team_wins", "away_team_wins", "home_team_points", "away_team_points"],
+    "model_scores": {
+      "accuracy": 0.85,
+      "precision": 0.83,
+      "recall": 0.87
+    },
+    "dataset": [
+      {"season": 2023, "week": 1, "home_win": true}
+    ],
+    "model_target": "home_win",
+    "date_trained": "01-15-2024"
+  }
+]
+```
+
+**Error Responses:**
+- `400 Bad Request` - Invalid input parameters
+- `500 Internal Server Error` - Server error
+
+---
+
+#### Get Model Package by ID
+
+Retrieve a specific model package by its unique identifier.
+
+```http
+GET /ml_models/{package_id}
+```
+
+**Path Parameters:**
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `package_id` | string | Yes | MongoDB ObjectId of the model package |
+
+**Example Request:**
+
+```http
+GET /ml_models/507f1f77bcf86cd799439011
+```
+
+**Response (200 OK):**
+```json
+{
+  "package_id": "507f1f77bcf86cd799439011",
+  "package_label": "RandomForest-v1",
+  "model": "gASVowAAAAAAAACMEn...",
+  "model_features": ["home_team_wins", "away_team_wins", "home_team_points", "away_team_points"],
+  "model_scores": {
+    "accuracy": 0.85,
+    "precision": 0.83,
+    "recall": 0.87
+  },
+  "dataset": [
+    {"season": 2023, "week": 1, "home_win": true}
+  ],
+  "model_target": "home_win",
+  "date_trained": "01-15-2024"
+}
+```
+
+**Error Responses:**
+- `400 Bad Request` - Invalid package ID format
+- `500 Internal Server Error` - Server error
+
+---
+
+#### Create Model Package
+
+Store a new ML model package.
+
+```http
+POST /ml_models/
+```
+
+**Request Body:**
+
+```json
+{
+  "package_label": "RandomForest-v1",
+  "model": "gASVowAAAAAAAACMEn...",
+  "model_features": ["home_team_wins", "away_team_wins", "home_team_points", "away_team_points"],
+  "model_scores": {
+    "accuracy": 0.85,
+    "precision": 0.83,
+    "recall": 0.87
+  },
+  "dataset": [
+    {"season": 2023, "week": 1, "home_win": true}
+  ],
+  "model_target": "home_win",
+  "date_trained": "01-15-2024"
+}
+```
+
+**Field Descriptions:**
+
+- `package_label`: Identifier for the model package
+- `model`: Base64 encoded serialized model (e.g., pickled/joblib scikit-learn model)
+- `model_features`: List of feature names the model expects as input
+- `model_scores`: Dictionary of model performance metrics (accuracy, precision, recall, etc.)
+- `dataset`: Training dataset used to train the model
+- `model_target`: Target variable the model predicts
+- `date_trained`: Date the model was trained (format: MM-DD-YYYY)
+
+**Response (201 Created):**
+```json
+{
+  "package_id": "507f1f77bcf86cd799439011",
+  "package_label": "RandomForest-v1",
+  "model": "gASVowAAAAAAAACMEn...",
+  "model_features": ["home_team_wins", "away_team_wins", "home_team_points", "away_team_points"],
+  "model_scores": {
+    "accuracy": 0.85,
+    "precision": 0.83,
+    "recall": 0.87
+  },
+  "dataset": [
+    {"season": 2023, "week": 1, "home_win": true}
+  ],
+  "model_target": "home_win",
+  "date_trained": "01-15-2024"
+}
+```
+
+**Error Responses:**
+- `400 Bad Request` - Invalid input data (validation error)
+- `500 Internal Server Error` - Server error
+
+---
+
+#### Update Model Package
+
+Update an existing model package.
+
+```http
+PUT /ml_models/{package_id}
+```
+
+**Path Parameters:**
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `package_id` | string | Yes | MongoDB ObjectId of the model package |
+
+**Request Body:**
+
+```json
+{
+  "package_label": "RandomForest-v2",
+  "model": "gASVowAAAAAAAACMEn...",
+  "model_features": ["home_team_wins", "away_team_wins", "home_team_points", "away_team_points", "weather"],
+  "model_scores": {
+    "accuracy": 0.87,
+    "precision": 0.85,
+    "recall": 0.89
+  },
+  "dataset": [
+    {"season": 2023, "week": 1, "home_win": true}
+  ],
+  "model_target": "home_win",
+  "date_trained": "02-20-2024"
+}
+```
+
+**Response (200 OK):**
+```json
+{
+  "package_id": "507f1f77bcf86cd799439011",
+  "package_label": "RandomForest-v2",
+  "model": "gASVowAAAAAAAACMEn...",
+  "model_features": ["home_team_wins", "away_team_wins", "home_team_points", "away_team_points", "weather"],
+  "model_scores": {
+    "accuracy": 0.87,
+    "precision": 0.85,
+    "recall": 0.89
+  },
+  "dataset": [
+    {"season": 2023, "week": 1, "home_win": true}
+  ],
+  "model_target": "home_win",
+  "date_trained": "02-20-2024"
+}
+```
+
+**Error Responses:**
+- `400 Bad Request` - Invalid input data
+- `404 Not Found` - Model package not found
+- `500 Internal Server Error` - Server error
+
+---
+
+#### Delete Model Package
+
+Delete a specific model package.
+
+```http
+DELETE /ml_models/{package_id}
+```
+
+**Path Parameters:**
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `package_id` | string | Yes | MongoDB ObjectId of the model package |
+
+**Response (200 OK):**
+```json
+{
+  "package_id": "507f1f77bcf86cd799439011",
+  "was_deleted": true
+}
+```
+
+**Error Responses:**
+- `404 Not Found` - Model package not found
+- `500 Internal Server Error` - Server error
+
+---
+
 ## Data Models
 
 ### Prediction Schema
@@ -296,6 +553,25 @@ DELETE /predictions/{prediction_id}
 | `is_correct` | boolean | No | Prediction accuracy | `null` before game, `true`/`false` after game concludes |
 
 *`pred_id` is auto-generated on creation and returned in responses
+
+---
+
+### ML Model Package Schema
+
+| Field | Type | Required | Description | Constraints |
+|-------|------|----------|-------------|-------------|
+| `package_id` | string | Yes* | Unique package identifier | Auto-generated (MongoDB ObjectId) |
+| `package_label` | string | Yes | Model package label | 1-100 characters |
+| `model` | string | Yes | Serialized ML model | Base64 encoded string (e.g., pickled/joblib scikit-learn model) |
+| `model_features` | array | Yes | Feature names the model expects | List of strings |
+| `model_scores` | object | Yes | Model performance metrics | Dictionary with any metrics (accuracy, precision, recall, f1, etc.) |
+| `dataset` | array | Yes | Training dataset | Array of objects containing training data |
+| `model_target` | string | Yes | Target variable name | The column/field the model predicts |
+| `date_trained` | string | Yes | Training date | Format: MM-DD-YYYY |
+
+*`package_id` is auto-generated on creation and returned in responses
+
+---
 
 ### Validation Rules
 
