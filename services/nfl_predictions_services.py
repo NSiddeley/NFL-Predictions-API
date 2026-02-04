@@ -1,4 +1,4 @@
-from database import predictions
+from database import nfl_predictions
 from models.predictions import Prediction, CreatePredictionRequest
 from bson import ObjectId
 from typing import Optional
@@ -14,7 +14,8 @@ def individual_serial(prediction) -> dict:
         "home_win": prediction["home_win"],
         "confidence": prediction["confidence"],
         "model_used": prediction["model_used"],
-        "is_correct": prediction.get("is_correct")  # Use .get() to handle None/missing values
+        "is_correct": prediction.get("is_correct"),  # Use .get() to handle None/missing values
+        "prediction_date": prediction["prediction_date"]  # Use .get() to handle None/missing values
     }
 
 def list_serial(prediction_list) -> list[dict]:
@@ -23,8 +24,8 @@ def list_serial(prediction_list) -> list[dict]:
 
 def get_all_predictions() -> list[dict]:
     """Retrieve all predictions from the database"""
-    all_predictions = predictions.find({})
-    count = predictions.count_documents({})
+    all_predictions = nfl_predictions.find({})
+    count = nfl_predictions.count_documents({})
 
     if all_predictions is None or count == 0:
         raise ValueError("No predictions found")
@@ -33,7 +34,7 @@ def get_all_predictions() -> list[dict]:
 
 def get_prediction_by_id(prediction_id: str) -> dict:
     """Retrieve a single prediction by ID"""
-    prediction = predictions.find_one({"_id": ObjectId(prediction_id)})
+    prediction = nfl_predictions.find_one({"_id": ObjectId(prediction_id)})
 
     if prediction is None:
         raise ValueError(f"Prediction with id: {prediction_id} not found") 
@@ -50,8 +51,8 @@ def get_predictions_by_params(season: Optional[int] = None, week: Optional[int] 
     if team:
         query["$or"] = [{"home_team": team}, {"away_team": team}]
 
-    filterered_predictions = predictions.find(query)
-    count = predictions.count_documents(query)
+    filterered_predictions = nfl_predictions.find(query)
+    count = nfl_predictions.count_documents(query)
 
     if filterered_predictions is None or count == 0:
         raise ValueError(f"No predictions found with the given parameters")
@@ -63,8 +64,8 @@ def get_predictions_by_season_week(season: int, week: int) -> list[dict]:
     """Retrieve predictions filtered by season and week"""
     query = {"season": season, "week": week}
 
-    filtered_predictions = predictions.find(query)
-    count = predictions.count_documents(query)
+    filtered_predictions = nfl_predictions.find(query)
+    count = nfl_predictions.count_documents(query)
 
     if filtered_predictions is None or count == 0:
         raise ValueError(f"No predictions found for week {week} of the {season} NFL season")
@@ -80,8 +81,8 @@ def get_predictions_by_team(team: str) -> list[dict]:
         ]
     }
 
-    filtered_predictions = predictions.find(query)
-    count = predictions.count_documents(query)
+    filtered_predictions = nfl_predictions.find(query)
+    count = nfl_predictions.count_documents(query)
 
     if filtered_predictions is None or count == 0:
         raise ValueError(f"No predictions found including {team}")
@@ -91,7 +92,7 @@ def get_predictions_by_team(team: str) -> list[dict]:
 def create_prediction(prediction: CreatePredictionRequest) -> dict:
     """Create a new prediction in the database"""
     prediction_dict = prediction.model_dump()
-    result = predictions.insert_one(prediction_dict)
+    result = nfl_predictions.insert_one(prediction_dict)
 
     if result is None:
         raise ValueError("Error creating prediction")
@@ -104,7 +105,7 @@ def update_prediction(prediction_id: str, prediction: CreatePredictionRequest) -
     """Update an existing prediction"""
 
     prediction_dict = prediction.model_dump()
-    result = predictions.find_one_and_update(
+    result = nfl_predictions.find_one_and_update(
         {"_id": ObjectId(prediction_id)},
         {"$set": prediction_dict},
         return_document=True
@@ -117,7 +118,7 @@ def update_prediction(prediction_id: str, prediction: CreatePredictionRequest) -
 
 def delete_prediction(prediction_id: str) -> bool:
     """Delete a prediction by ID"""
-    result = predictions.delete_one({"_id": ObjectId(prediction_id)})
+    result = nfl_predictions.delete_one({"_id": ObjectId(prediction_id)})
     
     if result.deleted_count == 0:
         raise ValueError(f"Prediction with id: {prediction_id} not found")
@@ -125,7 +126,7 @@ def delete_prediction(prediction_id: str) -> bool:
     return result.deleted_count > 0
 
 def delete_all() -> bool:
-    result = predictions.delete_many({})
+    result = nfl_predictions.delete_many({})
 
     if result.deleted_count == 0:
         raise ValueError(f"No predictions deleted")

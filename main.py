@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from routes.predictions_routes import router as predictions_router
+from routes.nfl_predictions_routes import router as nfl_predictions_router
 from database import client
 from contextlib import asynccontextmanager
 
@@ -26,7 +26,7 @@ app = FastAPI(
 )
 
 # Include routers
-app.include_router(predictions_router, prefix="/predictions", tags=["predictions"])
+app.include_router(nfl_predictions_router, prefix="/nflpredictions", tags=["nfl predictions"])
 
 @app.get("/")
 async def root():

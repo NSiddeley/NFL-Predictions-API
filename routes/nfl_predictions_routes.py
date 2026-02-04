@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Query, status, Request
 from fastapi.responses import JSONResponse
 from models.predictions import Prediction, CreatePredictionRequest
-from services.predictions_services import (
+from services.nfl_predictions_services import (
     get_all_predictions,
     get_prediction_by_id,
     get_predictions_by_params,

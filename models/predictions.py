@@ -55,6 +55,11 @@ class Prediction(BaseModel):
         description="Whether prediction was correct (None if game not concluded)",
         examples=[True, None]
     )
+    prediction_date: str = Field(
+        ...,
+        description="Date and time when the prediction was made",
+        examples=["2024-10-05T14:30:00Z"]
+    )
 
     @model_validator(mode='after')
     def validate_teams_different(self):
@@ -115,6 +120,11 @@ class CreatePredictionRequest(BaseModel):
         default=None,
         description="Whether prediction was correct (None if game not concluded)",
         examples=[True, None]
+    )
+    prediction_date: str = Field(
+        ...,
+        description="Date and time when the prediction was made",
+        examples=["2024-10-05T14:30:00Z"]
     )
 
     @model_validator(mode='after')
